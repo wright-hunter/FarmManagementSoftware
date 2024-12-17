@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Equipment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'equipment/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="header-pill">
+            <h1>Edit Equipment: {{ equipment.year }} {{ equipment.make }} {{ equipment.model }}</h1>
+        </div>
+        
+        <div class="form-container">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_make" class="form-label">Make</label>
+                    {{ form.make }}
+                </div>
+                <div class="mb-3">
+                    <label for="id_model" class="form-label">Model</label>
+                    {{ form.model }}
+                </div>
+                <div class="mb-3">
+                    <label for="id_year" class="form-label">Year</label>
+                    {{ form.year }}
+                </div>
+                <div class="mb-3">
+                    <label for="id_equipment_type" class="form-label">Type</label>
+                    {{ form.equipment_type }}
+                </div>
+                <div class="mb-3" id="custom-type-container" style="display: none;">
+                    <label for="id_custom_type" class="form-label">Custom Type</label>
+                    {{ form.custom_type }}
+                </div>
+                <div class="d-flex gap-3">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a href="{% url 'equipment_list' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleCustomType() {
+            const typeDropdown = document.getElementById('id_equipment_type');
+            const customTypeContainer = document.getElementById('custom-type-container');
+            if (typeDropdown.value === 'Other') {
+                customTypeContainer.style.display = 'block';
+            } else {
+                customTypeContainer.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            toggleCustomType();  // Set initial state
+            document.getElementById('id_equipment_type').addEventListener('change', toggleCustomType);
+        });
+    </script>
+</body>
+</html>

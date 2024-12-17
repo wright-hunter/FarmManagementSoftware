@@ -1,0 +1,99 @@
+{% load widget_tweaks %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if yearly_data %}Edit{% else %}Add{% endif %} Year Data - {{ field.name }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'fields/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="header-pill">
+            <h1>{% if yearly_data %}Edit{% else %}Add{% endif %} Year Data - {{ field.name }}</h1>
+        </div>
+        
+        <div class="form-container">
+            <form method="post" class="form-grid">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="id_year" class="form-label">Year</label>
+                    {% render_field form.year class="form-control" %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_crop" class="form-label">Crop</label>
+                    {% render_field form.crop class="form-control" %}
+                </div>
+
+                <div class="form-group" id="custom-crop-container">
+                    <label for="id_custom_crop" class="form-label">Custom Crop Type</label>
+                    {% render_field form.custom_crop class="form-control" %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_acres" class="form-label">Acres</label>
+                    {% render_field form.acres class="form-control" %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_yield_amount" class="form-label">Yield</label>
+                    {% render_field form.yield_amount class="form-control" %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_seed_cost" class="form-label">Seed Cost</label>
+                    {% render_field form.seed_cost class="form-control" %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_fertilizer_cost" class="form-label">Fertilizer Cost</label>
+                    {% render_field form.fertilizer_cost class="form-control" %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_chemical_cost" class="form-label">Chemical Cost</label>
+                    {% render_field form.chemical_cost class="form-control" %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_crop_insurance" class="form-label">Crop Insurance</label>
+                    {% render_field form.crop_insurance class="form-control" %}
+                </div>
+
+                <div class="form-group d-flex gap-3 col-12">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a href="{% url 'field_history' field.id %}" class="btn btn-secondary">Cancel</a>
+                </div>
+
+                <div class="form-group" id="custom-crop-container" style="display: none;">
+                    <label for="id_custom_crop" class="form-label">Custom Crop Type</label>
+                    {% render_field form.custom_crop class="form-control" %}
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+<script>
+    function toggleCustomCrop() {
+        const cropDropdown = document.getElementById('id_crop');
+        const customCropContainer = document.getElementById('custom-crop-container');
+        if (cropDropdown.value === 'Other') {
+            customCropContainer.style.display = 'block';
+            customCropContainer.style.gridRow = 'auto'; // Maintain grid flow
+        } else {
+            customCropContainer.style.display = 'none';
+            customCropContainer.style.gridRow = '0'; // Remove from flow when hidden
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        toggleCustomCrop();  // Set initial state
+        document.getElementById('id_crop').addEventListener('change', toggleCustomCrop);
+    });
+</script>
+</html>

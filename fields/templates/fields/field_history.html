@@ -1,0 +1,83 @@
+{% load static %}
+{% load currency_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ field.name }} - History</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'fields/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="header-pill">
+            <h1>{{ field.name }} - Field History</h1>
+        </div>
+        
+        <div class="form-container">
+            <div class="d-flex justify-content-end mb-4">
+                <div class="d-flex gap-3">
+                    <a href="{% url 'add_yearly_data' field.id %}" class="btn btn-primary">Add Year</a>
+                    <a href="{% url 'field_list' %}" class="btn btn-secondary">Back to Fields</a>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>Crop</th>
+                            <th>Acres</th>
+                            <th>Yield (bu)</th>
+                            <th>Seed ($)</th>
+                            <th>Fertilizer ($)</th>
+                            <th>Chemical ($)</th>
+                            <th>Insurance ($)</th>
+                            <th>Total Cost ($)</th>
+                            <th>Yield/Dollar</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in yearly_data %}
+                        <tr>
+                            <td class="fw-medium">{{ data.year }}</td>
+                            <td>{{ data.crop|default:"-" }}</td>
+                            <td>{{ data.acres|default:"-" }}</td>
+                            <td>{{ data.yield_amount|default:"-" }}</td>
+                            <td>{{ data.seed_cost|currency }}</td>
+                            <td>{{ data.fertilizer_cost|currency }}</td>
+                            <td>{{ data.chemical_cost|currency }}</td>
+                            <td>{{ data.crop_insurance|currency }}</td>
+                            <td class="fw-medium">{{ data.total_cost|currency }}</td>
+                            <td class="fw-medium">{{ data.yield_per_dollar|default:"-" }}</td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="{% url 'edit_yearly_data' field_id=field.id data_id=data.id %}" class="btn btn-warning btn-sm">Edit</a>
+                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('{{ data.id }}', '{{ data.year }}')">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="11" class="text-center">No yearly data available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>            
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmDelete(dataId, year) {
+            if (confirm(`Are you sure you want to delete data for year ${year}?`)) {
+                window.location.href = `/fields/${field.id}/yearly-data/${dataId}/delete/`;
+            }
+        }
+    </script>
+</body>
+</html>
